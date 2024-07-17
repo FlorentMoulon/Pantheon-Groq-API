@@ -6,8 +6,8 @@ import Groq from 'groq-sdk';
 
 
 
-async function getGroqChatCompletion(data: ChatApiData, APIKey: string) {
-  const groq = new Groq({ apiKey: APIKey });
+async function getGroqChatCompletion(data: ChatApiData, apiKey: string) {
+  const groq = new Groq({ apiKey: apiKey });
 
   return groq.chat.completions.create({
     messages: data.messages.map((message) => ({ role: (message.role=="user")? "user" : "system", content: message.content })),
@@ -15,8 +15,8 @@ async function getGroqChatCompletion(data: ChatApiData, APIKey: string) {
   });
 }
 
-async function getGroqChatCompletionBaseAPI(data: BaseApiData, APIKey: string) {
-  const groq = new Groq({ apiKey: APIKey });
+async function getGroqChatCompletionBaseAPI(data: BaseApiData, apiKey: string) {
+  const groq = new Groq({ apiKey: apiKey });
 
   return groq.chat.completions.create({
     messages: [{
@@ -31,9 +31,9 @@ async function getGroqChatCompletionBaseAPI(data: BaseApiData, APIKey: string) {
 }
 
 
-async function CallChatAPI(data: ChatApiData, APIKey: string): Promise<string[] | null> {
+async function CallChatAPI(data: ChatApiData, apiKey: string): Promise<string[] | null> {
   try {
-    const response = await getGroqChatCompletion(data, APIKey);
+    const response = await getGroqChatCompletion(data, apiKey);
     return response.choices.map((choice: { message: { content: string | null } }) => choice.message.content?.trim() || '');
   } catch (error: any) {
     dispatchError("Couldn't parse response from Groq Chat API");
@@ -42,9 +42,9 @@ async function CallChatAPI(data: ChatApiData, APIKey: string): Promise<string[] 
   }
 }
 
-async function CallBaseAPI(data: BaseApiData, APIKey: string): Promise<string[] | null> {
+async function CallBaseAPI(data: BaseApiData, apiKey: string): Promise<string[] | null> {
   try {
-    const response = await getGroqChatCompletionBaseAPI(data, APIKey);
+    const response = await getGroqChatCompletionBaseAPI(data, apiKey);
     return response.choices.map((choice: { message: { content: string | null } }) => choice.message.content?.trim() || '');
   } catch (error: any) {
     dispatchError("Couldn't parse response from Groq Chat API");
@@ -53,7 +53,7 @@ async function CallBaseAPI(data: BaseApiData, APIKey: string): Promise<string[] 
   }
 }
 
-export async function GrocCallChatModel(systemPrompt: string, userPrompt: string, APIKey: string, orgId: string, chatModel: string): Promise<string[] | null> {
+export async function GrocCallChatModel(systemPrompt: string, userPrompt: string, apiKey: string, chatModel: string): Promise<string[] | null> {
   const data: ChatApiData = {
     model: chatModel,
     messages: [
@@ -61,10 +61,10 @@ export async function GrocCallChatModel(systemPrompt: string, userPrompt: string
       { role: "user", content: userPrompt }
     ]
   };
-  return await CallChatAPI(data, APIKey);
+  return await CallChatAPI(data, apiKey);
 }
 
-export async function GrocGenerateChatComment(systemPrompt: string, userPrompts: string[], APIKey: string, orgId: string, chatModel: string): Promise<{ text: string, chainOfThought: [ChainOfThoughtType, string][] } | null> {
+export async function GrocGenerateChatComment(systemPrompt: string, userPrompts: string[], apiKey: string, chatModel: string): Promise<{ text: string, chainOfThought: [ChainOfThoughtType, string][] } | null> {
   const data: ChatApiData = {
     model: chatModel,
     messages: [{ role: "system", content: systemPrompt }]
@@ -72,7 +72,7 @@ export async function GrocGenerateChatComment(systemPrompt: string, userPrompts:
   try {
     for (const userPrompt of userPrompts) {
       data.messages.push({ role: "user", content: userPrompt });
-      const intermediateResponse = await CallChatAPI(data, APIKey);
+      const intermediateResponse = await CallChatAPI(data, apiKey);
       if (intermediateResponse) {
         data.messages.push({ role: "assistant", content: intermediateResponse[0] });
       } else {
@@ -89,7 +89,7 @@ export async function GrocGenerateChatComment(systemPrompt: string, userPrompts:
   }
 }
 
-export async function GrocGenerateBaseCompletions(prompt: string, APIKey: string, orgId: string, baseModel: string, temperature: number): Promise<string[] | null> {
+export async function GrocGenerateBaseCompletions(prompt: string, apiKey: string, baseModel: string, temperature: number): Promise<string[] | null> {
   const data: BaseApiData = {
     model: baseModel,
     prompt: prompt.trim(),
@@ -98,5 +98,5 @@ export async function GrocGenerateBaseCompletions(prompt: string, APIKey: string
     stop: ["\n"],
     n: 6,
   };
-  return await CallBaseAPI(data, APIKey);
+  return await CallBaseAPI(data, apiKey);
 }
