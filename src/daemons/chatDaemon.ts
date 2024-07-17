@@ -1,5 +1,5 @@
 import { Idea, ChatDaemonConfig } from '../redux/models';
-import { GenerateChatComment } from '../networking/OpenAILlmHandler';
+import { GenerateChatComment } from '../networking/llmHandler';
 
 
 class ChatDaemon {
@@ -17,14 +17,14 @@ class ChatDaemon {
     return filledPrompt;
   }
 
-  async generateComments(pastIdeas: Idea[], currentIdea: Idea, openAIKey: string, openAIOrgId: string, chatModel: string) {
+  async generateComments(pastIdeas: Idea[], currentIdea: Idea, apiType:number, apiKey: string, openAIOrgId: string, chatModel: string) {
     const userPrompts = [...this.config.userPrompts];
     const pastIdeasText = pastIdeas.map(idea => idea.text).join('\n');
     const currentIdeaText = currentIdea.text;
     for (let i = 0; i < userPrompts.length; i++) {
       userPrompts[i] = ChatDaemon.fillInPrompt(userPrompts[i], pastIdeasText, currentIdeaText);
     }
-    return await GenerateChatComment(this.config.systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+    return await GenerateChatComment(this.config.systemPrompt, userPrompts, apiType, apiKey, openAIOrgId, chatModel);
   }
 }
 

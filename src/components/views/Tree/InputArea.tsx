@@ -26,9 +26,10 @@ const InputArea = () => {
   const [newSectionButtonDisabled, setNewSectionButtonDisabled] = useState(true);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const instructModel = useAppSelector(state => state.config.chatModel);
+  const apiType = useAppSelector(state => state.config.selectedApi);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
+  const instructModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
   const activeThoughts = useAppSelector(selectActiveThoughts);
 
   useEffect(() => {
@@ -64,7 +65,8 @@ const InputArea = () => {
         const response = await instructDaemon.handleInstruction(
           activeThoughts,
           textAreaText,
-          openAIKey,
+          apiType,
+          apiKey,
           openAIOrgId,
           instructModel);
         if (response && response.length > 0) {
@@ -77,7 +79,7 @@ const InputArea = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
+  }, [instructDaemon, apiKey, apiType, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>

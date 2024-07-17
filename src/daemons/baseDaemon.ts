@@ -1,5 +1,5 @@
 import { Idea, BaseDaemonConfig } from '../redux/models';
-import { GenerateBaseCompletions } from '../networking/OpenAILlmHandler';
+import { GenerateBaseCompletions } from '../networking/llmHandler';
 
 
 class BaseDaemon {
@@ -32,9 +32,9 @@ class BaseDaemon {
     return context;
   }
 
-  getCompletions = async (currentIdeas: Idea[], openAIKey: string, openAIOrgId: string, baseModel: string) => {
+  getCompletions = async (currentIdeas: Idea[], apiType:number, apiKey: string, openAIOrgId: string, baseModel: string) => {
     const context = this.getContextWithPrefix(currentIdeas);
-    const completions = await GenerateBaseCompletions(context, openAIKey, openAIOrgId, baseModel, this.config.temperature);
+    const completions = await GenerateBaseCompletions(context, apiType, apiKey, openAIOrgId, baseModel, this.config.temperature);
     return completions;
   }
 }

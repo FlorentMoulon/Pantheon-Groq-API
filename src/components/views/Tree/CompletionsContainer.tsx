@@ -52,22 +52,23 @@ const CompletionsContainer = () => {
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const baseModel = useAppSelector(state => state.config.baseModel);
+  const apiType = useAppSelector(state => state.config.selectedApi);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
+  const baseModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].baseModel);
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
-    if (branchIdeas.length === 0 || !openAIKey) return;
-    const completions = await baseDaemon.getCompletions(branchIdeas, openAIKey, openAIOrgId, baseModel);
+    if (branchIdeas.length === 0 || !apiKey) return;
+    const completions = await baseDaemon.getCompletions(branchIdeas, apiType, apiKey, openAIOrgId, baseModel);
     if (completions) setCompletions(completions);
-  }, [baseDaemon, openAIKey, openAIOrgId, baseModel]);
+  }, [baseDaemon, apiType, apiKey, openAIOrgId, baseModel]);
 
   useEffect(() => {
     if (branchLength.current !== activeThoughts.length) {
       getNewCompletions(activeThoughts);
       branchLength.current = activeThoughts.length;
     }
-  }, [activeThoughts, baseDaemon, openAIKey, openAIOrgId, baseModel, getNewCompletions]);
+  }, [activeThoughts, baseDaemon, apiKey, apiType, openAIOrgId, baseModel, getNewCompletions]);
 
   return (
     <TopLevelContainer>

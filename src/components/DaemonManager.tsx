@@ -17,9 +17,11 @@ const DaemonManager = () => {
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const ideasEligibleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const chatModel = useAppSelector(state => state.config.chatModel);
+  const apiType = useAppSelector(state => state.config.selectedApi);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
+  const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
+  const apiName = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].name);
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const maxSecondsInactive = 3;
   const [newActivity, setNewActivity] = useState(false);
@@ -29,7 +31,7 @@ const DaemonManager = () => {
     lastTimeActive,
     newActivity,
     ideasEligibleForComments,
-    openAIKey,
+    apiKey,
     chatDaemons,
     chatDaemonActive,
     activeThoughts,
@@ -45,19 +47,19 @@ const DaemonManager = () => {
       lastTimeActive,
       newActivity,
       ideasEligibleForComments,
-      openAIKey,
+      apiKey,
       chatDaemons,
       chatDaemonActive,
       activeThoughts,
       mostRecentComment
     };
-  }, [lastTimeActive, newActivity, ideasEligibleForComments, openAIKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment]);
+  }, [lastTimeActive, newActivity, ideasEligibleForComments, apiKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment]);
 
   const generateComment = useCallback(async (daemon: ChatDaemon, idea: Idea, pastIdeas: Idea[], column: string,) => {
     try {
       setChatDaemonActive(true);
       dispatch(setIncomingComment({ daemonName: daemon.config.name, ideaId: idea.id, isRight: column === 'right' }));
-      const response = await daemon.generateComments(pastIdeas, idea, openAIKey, openAIOrgId, chatModel);
+      const response = await daemon.generateComments(pastIdeas, idea, apiType, apiKey, openAIOrgId, chatModel);
       if (!response) {
         dispatchError("Couldn't generate comment (no response received)");
         return;
@@ -77,11 +79,11 @@ const DaemonManager = () => {
       dispatch(setIncomingComment({}));
       setChatDaemonActive(false);
     }
-  }, [chatModel, openAIKey, openAIOrgId, dispatch])
+  }, [chatModel, apiType, apiKey, openAIOrgId, dispatch])
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const { lastTimeActive, newActivity, ideasEligibleForComments, openAIKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment } = stateRef.current;
+      const { lastTimeActive, newActivity, ideasEligibleForComments, apiKey, chatDaemons, chatDaemonActive, activeThoughts, mostRecentComment } = stateRef.current;
       if (chatDaemonActive) return;
       const secondsInactive = (new Date().getTime() - lastTimeActive) / 1000
       if (secondsInactive < maxSecondsInactive && !newActivity) {
@@ -91,8 +93,8 @@ const DaemonManager = () => {
         secondsInactive >= maxSecondsInactive
         && ideasEligibleForComments.length > 0
       ) {
-        if (!openAIKey) {
-          dispatchError("OpenAI API key not set. Enter your key in Settings.");
+        if (!apiKey) {
+          dispatchError(apiName + " API key not set. Enter your key in Settings.");
           return;
         }
 

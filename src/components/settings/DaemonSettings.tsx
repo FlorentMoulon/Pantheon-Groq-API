@@ -26,9 +26,8 @@ Leave a useful, short comment on this note. Don't write any more than 1-2 senten
 const DaemonSettings = () => {
   const chatDaemonConfigs = useAppSelector(state => state.daemon.chatDaemons);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
-  const chatModel = useAppSelector(state => state.config.chatModel);
-  const baseModel = useAppSelector(state => state.config.baseModel);
-
+  const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
+  const baseModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].baseModel);
   const dispatch = useAppDispatch();
 
   const addNewDaemon = () => {
