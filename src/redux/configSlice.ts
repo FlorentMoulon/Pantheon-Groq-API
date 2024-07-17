@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { get } from 'http';
 
 export enum Theme {
   System = 'system',

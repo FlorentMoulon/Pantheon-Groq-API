@@ -17,14 +17,7 @@ const DaemonManager = () => {
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const ideasEligibleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
-
-  console.log('-----------------');
-  console.log(useAppSelector(state => state));
-  console.log(useAppSelector(state => state.config));
-  console.log(useAppSelector(state => state.config.apiConfigs));
-  console.log(useAppSelector(state => state.config.selectedApi));
-
-
+  const apiType = useAppSelector(state => state.config.selectedApi);
   const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
   const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
@@ -65,7 +58,7 @@ const DaemonManager = () => {
     try {
       setChatDaemonActive(true);
       dispatch(setIncomingComment({ daemonName: daemon.config.name, ideaId: idea.id, isRight: column === 'right' }));
-      const response = await daemon.generateComments(pastIdeas, idea, openAIKey, openAIOrgId, chatModel);
+      const response = await daemon.generateComments(pastIdeas, idea, apiType, openAIKey, openAIOrgId, chatModel);
       if (!response) {
         dispatchError("Couldn't generate comment (no response received)");
         return;

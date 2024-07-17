@@ -26,6 +26,7 @@ const InputArea = () => {
   const [newSectionButtonDisabled, setNewSectionButtonDisabled] = useState(true);
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
+  const apiType = useAppSelector(state => state.config.selectedApi);
   const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
   const instructModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
@@ -64,6 +65,7 @@ const InputArea = () => {
         const response = await instructDaemon.handleInstruction(
           activeThoughts,
           textAreaText,
+          apiType,
           openAIKey,
           openAIOrgId,
           instructModel);

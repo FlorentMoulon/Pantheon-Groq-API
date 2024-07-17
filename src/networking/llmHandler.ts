@@ -1,105 +1,37 @@
-import axios from 'axios';
-import { dispatchError } from '../errorHandler';
-import { ChainOfThoughtType } from '../redux/models';
-import { AxiosConfig, AxiosData, BaseApiData, ChatApiData } from './networkingModels';
+import { ApiType } from "../redux/configSlice";
+import { ChainOfThoughtType } from "../redux/models";
+import { GrocCallChatModel, GrocGenerateBaseCompletions, GrocGenerateChatComment } from "./GroqLlmHandler";
+import { OpenAICallChatModel, OpenAIGenerateBaseCompletions, OpenAIGenerateChatComment } from "./OpenAILlmHandler";
 
-
-async function CallOpenAIAPI(url: string, data: AxiosData, openAIKey: string, openAIOrgId: string) {
-  const config: AxiosConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${openAIKey}`,
-      'OpenAI-Organization': openAIOrgId
-    }
-  };
-  try {
-    return await axios.post(url, data, config);
-  } catch (error: any) {
-    dispatchError("Error calling OpenAI API");
-    console.error(error);
-  }
-}
-
-async function CallChatAPI(data: ChatApiData, openAIKey: string, openAIOrgId: string): Promise<string[] | null> {
-  const response = await CallOpenAIAPI('https://api.openai.com/v1/chat/completions', data, openAIKey, openAIOrgId);
-  if (response) {
-    try {
-      return response.data.choices.map((choice: { message: { content: string } }) => choice.message.content.trim());
-    } catch (error: any) {
-      dispatchError("Couldn't parse response from OpenAI Chat API");
-      console.error(error);
-      return null;
-    }
-  } else {
-    return null;
-  }
-}
-
-async function CallBaseAPI(data: BaseApiData, openAIKey: string, openAIOrgId: string): Promise<string[] | null> {
-  const response = await CallOpenAIAPI('https://api.openai.com/v1/completions', data, openAIKey, openAIOrgId);
-  if (response) {
-    try {
-      return response.data.choices.map((choice: { text: string }) => choice.text.trim());
-    } catch (error: any) {
-      dispatchError("Couldn't parse response from OpenAI Base API");
-      console.error(error);
-      return null;
-    }
-  } else {
-    return null;
-  }
-}
-
-export async function CallChatModel(systemPrompt: string, userPrompt: string, openAIKey: string, openAIOrgId: string, chatModel: string): Promise<string[] | null> {
-  const data: ChatApiData = {
-    model: chatModel,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt }
-    ]
-  };
-  return await CallChatAPI(data, openAIKey, openAIOrgId);
-}
-
-const roleToEnumMap: { [key: string]: ChainOfThoughtType } = {
+export const roleToEnumMap: { [key: string]: ChainOfThoughtType } = {
   'system': ChainOfThoughtType.System,
   'user': ChainOfThoughtType.User,
   'assistant': ChainOfThoughtType.Daemon
 };
 
-export async function GenerateChatComment(systemPrompt: string, userPrompts: string[], openAIKey: string, openAIOrgId: string, chatModel: string): Promise<{ text: string, chainOfThought: [ChainOfThoughtType, string][] } | null> {
-  const data: ChatApiData = {
-    model: chatModel,
-    messages: [{ role: "system", content: systemPrompt }]
-  };
-  try {
-    for (const userPrompt of userPrompts) {
-      data.messages.push({ role: "user", content: userPrompt });
-      const intermediateResponse = await CallChatAPI(data, openAIKey, openAIOrgId);
-      if (intermediateResponse) {
-        data.messages.push({ role: "assistant", content: intermediateResponse[0] });
-      } else {
-        throw new Error("Didn't receive response from OpenAI Chat API", { cause: intermediateResponse });
-      }
-    }
-    const commentText: string = data.messages[data.messages.length - 1].content;
-    const chainOfThought: [ChainOfThoughtType, string][] = data.messages.map((message: { role: string; content: string }) => [roleToEnumMap[message.role], message.content]);
-    return { text: commentText, chainOfThought: chainOfThought };
-  } catch (error: any) {
-    dispatchError("Couldn't finish daemon chain-of-thought");
-    console.error(error);
-    return null;
+export async function CallChatModel(systemPrompt: string, userPrompt: string, apiType:number, openAIKey: string, openAIOrgId: string, chatModel: string): Promise<string[] | null> {
+  if (apiType === ApiType.OpenAI) {
+    return await OpenAICallChatModel(systemPrompt, userPrompt, openAIKey, openAIOrgId, chatModel);
+  }
+  else {
+    return await GrocCallChatModel(systemPrompt, userPrompt, openAIKey, openAIOrgId, chatModel);
   }
 }
 
-export async function GenerateBaseCompletions(prompt: string, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number): Promise<string[] | null> {
-  const data: BaseApiData = {
-    model: baseModel,
-    prompt: prompt.trim(),
-    max_tokens: 64,
-    temperature: temperature,
-    stop: ["\n"],
-    n: 6,
-  };
-  return await CallBaseAPI(data, openAIKey, openAIOrgId);
+export async function GenerateChatComment(systemPrompt: string, userPrompts: string[], apiType:number, openAIKey: string, openAIOrgId: string, chatModel: string): Promise<{ text: string, chainOfThought: [ChainOfThoughtType, string][] } | null> {
+  if (apiType === ApiType.OpenAI) {
+    return await OpenAIGenerateChatComment(systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+  }
+  else {
+    return await GrocGenerateChatComment(systemPrompt, userPrompts, openAIKey, openAIOrgId, chatModel);
+  }
+}
+
+export async function GenerateBaseCompletions(prompt: string, apiType:number, openAIKey: string, openAIOrgId: string, baseModel: string, temperature: number): Promise<string[] | null> {
+  if (apiType === ApiType.OpenAI) {
+    return await OpenAIGenerateBaseCompletions(prompt, openAIKey, openAIOrgId, baseModel, temperature);
+  }
+  else {
+    return await GrocGenerateBaseCompletions(prompt, openAIKey, openAIOrgId, baseModel, temperature);
+  }
 }

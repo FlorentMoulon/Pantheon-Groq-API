@@ -6,6 +6,7 @@ import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
 import { Idea } from '../../../redux/models';
+import { ApiType } from '../../../redux/configSlice';
 
 
 const TopLevelContainer = styled.div`
@@ -52,13 +53,14 @@ const CompletionsContainer = () => {
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.apiKey);
-  const openAIOrgId = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.orgId);
-  const baseModel = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.baseModel);
+  const apiType = useAppSelector(state => state.config.selectedApi);
+  const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
+  const baseModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].baseModel);
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
     if (branchIdeas.length === 0 || !openAIKey) return;
-    const completions = await baseDaemon.getCompletions(branchIdeas, openAIKey, openAIOrgId, baseModel);
+    const completions = await baseDaemon.getCompletions(branchIdeas, apiType, openAIKey, openAIOrgId, baseModel);
     if (completions) setCompletions(completions);
   }, [baseDaemon, openAIKey, openAIOrgId, baseModel]);
 
