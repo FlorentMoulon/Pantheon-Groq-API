@@ -52,9 +52,9 @@ const CompletionsContainer = () => {
   const branchLength = useRef(0);
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const baseModel = useAppSelector(state => state.config.baseModel);
+  const openAIKey = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.orgId);
+  const baseModel = useAppSelector(state => state.config.apiConfigs?.[state.config.selectedApi]?.baseModel);
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
     if (branchIdeas.length === 0 || !openAIKey) return;

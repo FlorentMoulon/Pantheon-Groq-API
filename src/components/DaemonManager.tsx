@@ -17,9 +17,17 @@ const DaemonManager = () => {
   const activeThoughts = useAppSelector(selectActiveThoughts);
   const ideasEligibleForComments = useAppSelector(selectActiveThoughtsEligibleForComments);
   const mostRecentComment = useAppSelector(selectMostRecentCommentForCurrentBranch);
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const chatModel = useAppSelector(state => state.config.chatModel);
+
+  console.log('-----------------');
+  console.log(useAppSelector(state => state));
+  console.log(useAppSelector(state => state.config));
+  console.log(useAppSelector(state => state.config.apiConfigs));
+  console.log(useAppSelector(state => state.config.selectedApi));
+
+
+  const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
+  const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const maxSecondsInactive = 3;
   const [newActivity, setNewActivity] = useState(false);

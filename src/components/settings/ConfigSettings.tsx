@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
-import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
+import { SettingLabel } from "../../styles/sharedStyles";
+import { setSelectedApi, ApiType } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-
+import ConfigSettingsGroq from "./ConfigSettingsGroq";
+import ConfigSettingsOpenAI from "./ConfigSettingsOpenAI";
 
 const TextSettingContainer = styled.div`
   display: flex;
@@ -13,48 +14,39 @@ const TextSettingContainer = styled.div`
 
 const ConfigSettings = () => {
   const dispatch = useAppDispatch();
-  const openAIKey = useAppSelector(state => state.config.openAIKey);
-  const openAIOrgId = useAppSelector(state => state.config.openAIOrgId);
-  const chatModel = useAppSelector(state => state.config.chatModel);
-  const baseModel = useAppSelector(state => state.config.baseModel);
+  const apiType = useAppSelector(state => state.config.selectedApi);
 
   return (
     <div>
       <TextSettingContainer>
-        <SettingLabel>OpenAI API key</SettingLabel>
-        <TextInput
-          placeholder="sk-..."
-          value={openAIKey}
-          onChange={(event) => dispatch(setOpenaiKey(event.target.value))}
-        />
+        <SettingLabel>API </SettingLabel>
+        <label>
+          <input
+            type="radio"
+            name="api"
+            value="Use OpenAI API"
+            checked={apiType === ApiType.OpenAI}
+            onChange={() => dispatch(setSelectedApi(ApiType.OpenAI))}
+          />
+          Use OpenAI API
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="api"
+            value="Use Groq API"
+            checked={apiType === ApiType.Groq}
+            onChange={() => dispatch(setSelectedApi(ApiType.Groq))}
+          />
+          Use Groq API
+        </label>
       </TextSettingContainer>
-      <TextSettingContainer>
-        <SettingLabel>OpenAI organization ID</SettingLabel>
-        <TextInput
-          placeholder="org-..."
-          value={openAIOrgId}
-          onChange={(event) => dispatch(setOpenaiOrgId(event.target.value))}
-        />
-        <Hint>Optional</Hint>
-      </TextSettingContainer>
-      <TextSettingContainer>
-        <SettingLabel>Chat model</SettingLabel>
-        <TextInput
-          placeholder={chatModel}
-          value={chatModel}
-          onChange={(event) => dispatch(updateChatModel(event.target.value))}
-        />
-        <Hint>Used by daemons and 'Ask AI'</Hint>
-      </TextSettingContainer>
-      <TextSettingContainer>
-        <SettingLabel>Base model</SettingLabel>
-        <TextInput
-          placeholder={baseModel}
-          value={baseModel}
-          onChange={(event) => dispatch(updateBaseModel(event.target.value))}
-        />
-        <Hint>Used by 'AI suggestions'</Hint>
-      </TextSettingContainer>
+
+      {apiType === ApiType.OpenAI ? (
+        <ConfigSettingsOpenAI />
+      ) : (
+        <ConfigSettingsGroq />
+      )}
     </div>
   )
 }
