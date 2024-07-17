@@ -7,7 +7,7 @@ import Groq from 'groq-sdk';
 
 
 async function getGroqChatCompletion(data: ChatApiData, apiKey: string) {
-  const groq = new Groq({ apiKey: apiKey });
+  const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   return groq.chat.completions.create({
     messages: data.messages.map((message) => ({ role: (message.role==="user")? "user" : "system", content: message.content })),
@@ -16,7 +16,7 @@ async function getGroqChatCompletion(data: ChatApiData, apiKey: string) {
 }
 
 async function getGroqChatCompletionBaseAPI(data: BaseApiData, apiKey: string) {
-  const groq = new Groq({ apiKey: apiKey });
+  const groq = new Groq({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   return groq.chat.completions.create({
     messages: [{
