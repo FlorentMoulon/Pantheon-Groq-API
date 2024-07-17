@@ -6,7 +6,6 @@ import { aiFont, fadeInAnimation } from '../../../styles/mixins';
 import { ContainerHorizontal, Filler, Hint, TextButton } from '../../../styles/sharedStyles';
 import BaseDaemon from '../../../daemons/baseDaemon';
 import { Idea } from '../../../redux/models';
-import { ApiType } from '../../../redux/configSlice';
 
 
 const TopLevelContainer = styled.div`
@@ -62,14 +61,14 @@ const CompletionsContainer = () => {
     if (branchIdeas.length === 0 || !apiKey) return;
     const completions = await baseDaemon.getCompletions(branchIdeas, apiType, apiKey, openAIOrgId, baseModel);
     if (completions) setCompletions(completions);
-  }, [baseDaemon, apiKey, openAIOrgId, baseModel]);
+  }, [baseDaemon, apiType, apiKey, openAIOrgId, baseModel]);
 
   useEffect(() => {
     if (branchLength.current !== activeThoughts.length) {
       getNewCompletions(activeThoughts);
       branchLength.current = activeThoughts.length;
     }
-  }, [activeThoughts, baseDaemon, apiKey, openAIOrgId, baseModel, getNewCompletions]);
+  }, [activeThoughts, baseDaemon, apiKey, apiType, openAIOrgId, baseModel, getNewCompletions]);
 
   return (
     <TopLevelContainer>

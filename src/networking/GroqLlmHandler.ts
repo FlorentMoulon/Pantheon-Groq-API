@@ -10,7 +10,7 @@ async function getGroqChatCompletion(data: ChatApiData, apiKey: string) {
   const groq = new Groq({ apiKey: apiKey });
 
   return groq.chat.completions.create({
-    messages: data.messages.map((message) => ({ role: (message.role=="user")? "user" : "system", content: message.content })),
+    messages: data.messages.map((message) => ({ role: (message.role==="user")? "user" : "system", content: message.content })),
     model: data.model,
   });
 }

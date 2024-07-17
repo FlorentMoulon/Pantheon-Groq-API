@@ -79,7 +79,7 @@ const InputArea = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, apiKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
+  }, [instructDaemon, apiKey, apiType, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>

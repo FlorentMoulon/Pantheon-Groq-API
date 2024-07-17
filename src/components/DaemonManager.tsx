@@ -78,7 +78,7 @@ const DaemonManager = () => {
       dispatch(setIncomingComment({}));
       setChatDaemonActive(false);
     }
-  }, [chatModel, apiKey, openAIOrgId, dispatch])
+  }, [chatModel, apiType, apiKey, openAIOrgId, dispatch])
 
   useEffect(() => {
     const interval = setInterval(() => {
