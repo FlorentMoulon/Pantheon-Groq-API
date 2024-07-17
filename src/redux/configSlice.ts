@@ -55,10 +55,10 @@ const configSlice = createSlice({
     setSelectedApi(state, action: PayloadAction<number>) {
       state.selectedApi = action.payload;
     },
-    setOpenaiKey(state, action: PayloadAction<string>) {
+    setApiKey(state, action: PayloadAction<string>) {
       state.apiConfigs[state.selectedApi].apiKey = action.payload;
     },
-    setOpenaiOrgId(state, action: PayloadAction<string>) {
+    setOrgId(state, action: PayloadAction<string>) {
       state.apiConfigs[state.selectedApi].orgId = action.payload
     },
     updateBaseModel(state, action: PayloadAction<string>) {
@@ -78,6 +78,6 @@ const configSlice = createSlice({
   },
 });
 
-export const { updateBaseModel, updateChatModel, setOpenaiKey, setSelectedApi, setOpenaiOrgId, setSynchronizerActive, setTheme, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
+export const { updateBaseModel, updateChatModel, setApiKey, setSelectedApi, setOrgId, setSynchronizerActive, setTheme, replaceSlice: replaceConfigSlice, resetSlice: resetConfigSlice } = configSlice.actions;
 export const initialConfigState = initialState;
 export default configSlice.reducer;

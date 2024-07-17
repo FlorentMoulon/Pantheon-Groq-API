@@ -54,22 +54,22 @@ const CompletionsContainer = () => {
   const baseDaemonConfig = useAppSelector(state => state.daemon.baseDaemon);
   const [baseDaemon] = useState(new BaseDaemon(baseDaemonConfig));
   const apiType = useAppSelector(state => state.config.selectedApi);
-  const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
   const baseModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].baseModel);
 
   const getNewCompletions = useCallback(async (branchIdeas: Idea[]) => {
-    if (branchIdeas.length === 0 || !openAIKey) return;
-    const completions = await baseDaemon.getCompletions(branchIdeas, apiType, openAIKey, openAIOrgId, baseModel);
+    if (branchIdeas.length === 0 || !apiKey) return;
+    const completions = await baseDaemon.getCompletions(branchIdeas, apiType, apiKey, openAIOrgId, baseModel);
     if (completions) setCompletions(completions);
-  }, [baseDaemon, openAIKey, openAIOrgId, baseModel]);
+  }, [baseDaemon, apiKey, openAIOrgId, baseModel]);
 
   useEffect(() => {
     if (branchLength.current !== activeThoughts.length) {
       getNewCompletions(activeThoughts);
       branchLength.current = activeThoughts.length;
     }
-  }, [activeThoughts, baseDaemon, openAIKey, openAIOrgId, baseModel, getNewCompletions]);
+  }, [activeThoughts, baseDaemon, apiKey, openAIOrgId, baseModel, getNewCompletions]);
 
   return (
     <TopLevelContainer>

@@ -12,7 +12,23 @@ describe('importAppState thunk', () => {
       idea: { ideas: { 1: { id: 1, sectionId: 1, parentIdeaId: null, text: 'Idea 1', isUser: true } } },
       comment: { comments: { 1: { id: 1, text: 'Sample comment', author: 'User1' } } },
       daemon: { chatDaemons: [], baseDaemon: { id: 1, name: 'BaseDaemon' }, instructDaemon: { id: 2, name: 'InstructDaemon' } },
-      config: { openAIKey: 'sample-key', openAIOrgId: 'sample-org-id', baseModel: 'base-model', chatModel: 'chat-model', isSynchronizerActive: true }
+      config: { selectedApi: 0,
+        apiConfigs: [
+          {
+            name: 'OpenAI',
+            apiKey: 'sample-key',
+            orgId: 'sample-org-id',
+            baseModel: 'base-model',
+            chatModel: 'chat-model'
+          },
+          {
+            name: 'Groq',
+            apiKey: 'sample-key',
+            orgId: 'sample-org-id',
+            baseModel: 'base-model',
+            chatModel: 'chat-model'
+          }
+        ], isSynchronizerActive: true }
     }
     const jsonString = JSON.stringify(exportedState);
 

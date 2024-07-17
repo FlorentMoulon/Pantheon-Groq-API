@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
-import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
+import { setApiKey, setOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
 
@@ -27,7 +27,7 @@ const ConfigSettingsOpenAI = () => {
         <TextInput
           placeholder="sk-..."
           value={openAIKey}
-          onChange={(event) => dispatch(setOpenaiKey(event.target.value))}
+          onChange={(event) => dispatch(setApiKey(event.target.value))}
         />
       </TextSettingContainer>
       <TextSettingContainer>
@@ -35,7 +35,7 @@ const ConfigSettingsOpenAI = () => {
         <TextInput
           placeholder="org-..."
           value={openAIOrgId}
-          onChange={(event) => dispatch(setOpenaiOrgId(event.target.value))}
+          onChange={(event) => dispatch(setOrgId(event.target.value))}
         />
         <Hint>Optional</Hint>
       </TextSettingContainer>

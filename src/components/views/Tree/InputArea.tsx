@@ -27,7 +27,7 @@ const InputArea = () => {
   const instructDaemonConfig = useAppSelector(state => state.daemon.instructDaemon);
   const [instructDaemon, setInstructDaemon] = useState<InstructDaemon>(new InstructDaemon(instructDaemonConfig));
   const apiType = useAppSelector(state => state.config.selectedApi);
-  const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
   const instructModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
   const activeThoughts = useAppSelector(selectActiveThoughts);
@@ -66,7 +66,7 @@ const InputArea = () => {
           activeThoughts,
           textAreaText,
           apiType,
-          openAIKey,
+          apiKey,
           openAIOrgId,
           instructModel);
         if (response && response.length > 0) {
@@ -79,7 +79,7 @@ const InputArea = () => {
         console.error(error);
       }
     }
-  }, [instructDaemon, openAIKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
+  }, [instructDaemon, apiKey, openAIOrgId, instructModel, activeThoughts, dispatch, textAreaText, updateText]);
 
   return (
     <ContainerVertical style={{ alignItems: 'center', justifyContent: 'center' }}>

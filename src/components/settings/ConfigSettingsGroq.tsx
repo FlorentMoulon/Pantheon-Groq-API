@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Hint, SettingLabel, TextInput } from "../../styles/sharedStyles";
-import { setOpenaiKey, setOpenaiOrgId, updateBaseModel, updateChatModel } from "../../redux/configSlice";
+import { setApiKey, updateBaseModel, updateChatModel } from "../../redux/configSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
 
@@ -13,7 +13,7 @@ const TextSettingContainer = styled.div`
 
 const ConfigSettingsGroq = () => {
   const dispatch = useAppDispatch();
-  const openAIKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
+  const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
   const baseModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].baseModel);
 
@@ -25,8 +25,8 @@ const ConfigSettingsGroq = () => {
         <SettingLabel>Groc API key</SettingLabel>
         <TextInput
           placeholder="..."
-          value={openAIKey}
-          onChange={(event) => dispatch(setOpenaiKey(event.target.value))}
+          value={apiKey}
+          onChange={(event) => dispatch(setApiKey(event.target.value))}
         />
       </TextSettingContainer>
       <TextSettingContainer>

@@ -115,10 +115,23 @@ describe('Migrations', () => {
         }
       },
       config: {
-        openAIKey: "legacyOpenAIKey",
-        openAIOrgId: "legacyOpenAIOrgId",
-        baseModel: "legacyBaseModel",
-        chatModel: "legacyChatModel",
+        selectedApi: 0,
+        apiConfigs: [
+          {
+            name: 'OpenAI',
+            apiKey: 'legacyOpenAIKey',
+            orgId: 'legacyOpenAIOrgId',
+            baseModel: 'legacyBaseModel',
+            chatModel: 'legacyChatModel'
+          },
+          {
+            name: 'Groq',
+            apiKey: 'legacyGroqKey',
+            orgId: 'legacyGroqOrgId',
+            baseModel: 'llama3-8b-8192',
+            chatModel: 'llama3-8b-8192'
+          }
+        ],
         isSynchronizerActive: true
       },
       ui: initialUiState,
