@@ -21,6 +21,7 @@ const DaemonManager = () => {
   const apiKey = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].apiKey);
   const openAIOrgId = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].orgId);
   const chatModel = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].chatModel);
+  const apiName = useAppSelector(state => state.config.apiConfigs[state.config.selectedApi].name);
   const lastTimeActive = useAppSelector(state => state.ui.lastTimeActive);
   const maxSecondsInactive = 3;
   const [newActivity, setNewActivity] = useState(false);
@@ -93,7 +94,7 @@ const DaemonManager = () => {
         && ideasEligibleForComments.length > 0
       ) {
         if (!apiKey) {
-          dispatchError("OpenAI API key not set. Enter your key in Settings.");
+          dispatchError(apiName + " API key not set. Enter your key in Settings.");
           return;
         }
 
