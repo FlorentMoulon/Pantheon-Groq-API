@@ -1,5 +1,5 @@
 import { Idea, BaseDaemonConfig } from '../redux/models';
-import { GenerateBaseCompletions } from '../networking/llmHandler';
+import { GenerateBaseCompletions } from '../networking/OpenAILlmHandler';
 
 
 class BaseDaemon {

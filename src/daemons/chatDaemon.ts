@@ -1,5 +1,5 @@
 import { Idea, ChatDaemonConfig } from '../redux/models';
-import { GenerateChatComment } from '../networking/llmHandler';
+import { GenerateChatComment } from '../networking/OpenAILlmHandler';
 
 
 class ChatDaemon {
