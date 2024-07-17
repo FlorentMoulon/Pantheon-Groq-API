@@ -1,5 +1,5 @@
 import { Idea, InstructDaemonConfig } from '../redux/models';
-import { CallChatModel } from '../networking/OpenAILlmHandler';
+import { CallChatModel } from '../networking/llmHandler';
 import ChatDaemon from './chatDaemon';
 
 

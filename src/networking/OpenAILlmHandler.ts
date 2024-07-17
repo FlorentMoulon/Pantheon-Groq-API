@@ -2,7 +2,7 @@ import axios from 'axios';
 import { dispatchError } from '../errorHandler';
 import { ChainOfThoughtType } from '../redux/models';
 import { AxiosConfig, AxiosData, BaseApiData, ChatApiData } from './networkingModels';
-import { LlmHandler, roleToEnumMap } from './llmHandler';
+import { LlmHandler, roleToEnumMap } from './_LlmHandler';
 
 
 export class OpenAILlmHandler extends LlmHandler {

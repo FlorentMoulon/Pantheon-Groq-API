@@ -1,7 +1,7 @@
 import { dispatchError } from '../errorHandler';
 import { ChainOfThoughtType } from '../redux/models';
 import { BaseApiData, ChatApiData } from './networkingModels';
-import { LlmHandler, roleToEnumMap } from './llmHandler';
+import { LlmHandler, roleToEnumMap } from './_LlmHandler';
 import Groq from 'groq-sdk';
 
 
